@@ -24,8 +24,7 @@ if (isset($submitPressed)) {
     echo '<div class="d-flex justify-content-center>Please provide with a valid name</div>';
   } else {
     $results = addNewBook($isbn, $title, $author, $pub, $pubyear, $desc, $id);
-    echo $results;
-    if ($results==1) {
+    if ($results) {
         echo '<div class="d-flex justify-content-center">Data Succesfully Loaded</div>';
     } else {
         echo '<div class="d-flex justify-content-center">Failed to add data</div>';
