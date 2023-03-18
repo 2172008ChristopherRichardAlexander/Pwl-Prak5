@@ -1,4 +1,6 @@
 <?php
+    // 2172008 - Christopher Richard Alexander
+    // 2172030 - Femmy Friscilla S.
     session_start();
     if (! isset($_SESSION['registered_user'])) {
         $_SESSION['registered_user'] = false;

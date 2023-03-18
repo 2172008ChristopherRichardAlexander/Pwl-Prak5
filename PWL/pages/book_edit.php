@@ -5,6 +5,26 @@ if (isset($editedIsbn)) {
     $genreName = fetchOneGenreName($editedIsbn);
 }
 
+if(isset($updatePressed)){
+    $book=fetchOneBook($editedISBN);
+    $targetDirectory = 'uploads/'; 
+    $fileExtension = pathinfo($_FILES['txtFile']['name'], PATHINFO_EXTENSION);
+    $coverName = $editedISBN . '.' . $fileExtension;
+    $fileUploadPath = $targetDirectory . $coverName;
+    if ($_FILES['txtFile']['size'] > 1024 * 2048){
+        echo '<div>Uploaded file exceed 2MB</div>';
+    } else{
+        $result = uploadImageBookCover($editedISBN,$coverName);
+        if($result){
+            unlink($fileUploadPath); 
+            move_uploaded_file($_FILES['txtFile']['tmp_name'], $fileUploadPath);
+            header('location:index.php?menu=book');
+        }else{
+            echo '<div>Uploaded image error</div>';
+        }
+        
+    }
+}
 $updatePressed = filter_input(INPUT_POST, 'btnUpdate');
 if (isset($updatePressed)) {
     $isbn = filter_input(INPUT_POST, 'isbn');
@@ -16,31 +36,31 @@ if (isset($updatePressed)) {
     $cover = filter_input(INPUT_POST, 'cover');
     $id = filter_input(INPUT_POST, 'genre_id');
     if (trim($title) == ' ') {
-        echo '<div>Please fill updated title name</div>';
+        echo '<div class="d-flex justify-content-center">Please fill updated title name</div>';
     } else if (trim($author) == ' ') {
-        echo '<div>Please fill updated author name</div>';
+        echo '<div class="d-flex justify-content-center">Please fill updated author name</div>';
     } else if (trim($pub) == ' ') {
-        echo '<div>Please fill updated publisher name</div>';
+        echo '<div class="d-flex justify-content-center">Please fill updated publisher name</div>';
     } else if (trim($pubyear) == ' ') {
-        echo '<div>Please fill updated publisher year date</div>';
+        echo '<div class="d-flex justify-content-center">Please fill updated publisher year date</div>';
     } else if (trim($desc) == ' ') {
-        echo '<div>Please fill updated description name</div>';
+        echo '<div class="d-flex justify-content-center">Please fill updated description name</div>';
     } else if (trim($cover) == ' ') {
-        echo '<div>Please fill updated cover name</div>';
+        echo '<div class="d-flex justify-content-center">Please fill updated cover name</div>';
     } else if (trim($id) == ' ') {
-        echo '<div>Please fill updated genre name</div>';
+        echo '<div class="d-flex justify-content-center">Please fill updated genre name</div>';
     } else {
-        $results = updateBookToDb($book['isbn'], $title, $author, $pub, $pubyear, $desc, $cover, $id);
+        $results = updateBookToDb($book['isbn'], $title, $author, $pub, $pubyear, $desc, $id);
         if ($results) {
             header('location:index.php?menu=book');
         } else {
-            echo '<div>Failed to update data</div>';
+            echo '<div class="d-flex justify-content-center">Failed to update data</div>';
         }
     }
 }
 ?>
 
-<div class="container pt-4 ps-5 pe-5">
+<div class="container ps-5 pe-5">
     <form method="post">
         <div class="form-row d-flex justify-content-center mb-3">
             <div class="form-group col-md-6 pe-2">
@@ -73,9 +93,17 @@ if (isset($updatePressed)) {
             </textarea>
         </div>
         <div class="form-group mb-3">
-            <label for="cover">Cover</label>
-            <input type="text" class="form-control" name="cover" id="cover" value="<?php echo $book['cover']; ?>">
-        </div>
+            <h3>Cover</h3>
+            <label for="cover"></label>
+            <?php
+                $book = fetchOneBook($editedIsbn);
+                if($book['cover']!= null ||$book['cover']!=""){
+                    echo '<img width="400" src="uploads/'.$book['cover'].'">';
+                }else{
+                    echo '<img width="400" src="uploads/default.jpg">';
+                }
+            ?>
+            <input name="txtFile" class="form-control" type="file" id="formFileMultiple" multiple accept="image/jpeg|image/png"/>
         <div class="form-group mb-3">
             <label for="genre_id">Genre</label>
             <select class="form-select" aria-label="Default select example" name="genre_id" id="genre_id">
