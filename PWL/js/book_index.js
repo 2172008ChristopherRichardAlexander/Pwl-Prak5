@@ -8,3 +8,7 @@ function deleteBook(isbn) {
         window.location = "index.php?menu=book&cmd=del&isbn=" + isbn;
     }
 }
+
+function uploadImgBook(isbn) {
+    window.location = "index.php?menu=upload_book_cover&isbn=" + isbn;
+}

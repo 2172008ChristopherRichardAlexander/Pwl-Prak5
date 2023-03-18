@@ -6,9 +6,9 @@ if (isset($loginPressed)) {
   if ((trim($email) == '') || (trim($password) == '')){
     echo '<div>Please input you name and password</div>';
   } else {
-    $result = login($email, md5($password));
+    $result = login($email, $password);
     $user = login($email,$password);
-    if($user['emal']==$email){
+    if($user['email']==$email){
         $_SESSION['registered_user'] = true;
         $_SESSION['registered_name'] = $user['name'];
         header('location:index.php');
@@ -41,12 +41,12 @@ if (isset($loginPressed)) {
                   <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
 
                   <div class="form-outline mb-4">
-                    <input type="email" id="form2Example17" class="form-control form-control-lg" />
+                    <input name="txtEmail" type="email" id="form2Example17" class="form-control form-control-lg" />
                     <label  for="email-address">Email address</label>
                   </div>
 
                   <div class="form-outline mb-4">
-                    <input type="password" id="form2Example27" class="form-control form-control-lg" />
+                    <input name="txtPassword" type="password" id="form2Example27" class="form-control form-control-lg" />
                     <label  for="password">Password</label>
                   </div>
 

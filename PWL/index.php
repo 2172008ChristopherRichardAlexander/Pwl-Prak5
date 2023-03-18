@@ -75,9 +75,10 @@
                 case 'book_update':
                     include_once 'pages/book_edit.php';
                     break;
-                case 'upload_cover':
-                    include_once  'pages/upload_cover.php';
+                case 'upload_book_cover':
+                    include_once  'pages/upload_book_cover.php';
                     break;
+                
                 case 'logout':
                     session_unset();
                     session_destroy();

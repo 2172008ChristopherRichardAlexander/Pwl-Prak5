@@ -74,6 +74,14 @@ if (isset($updatePressed)) {
         </div>
         <div class="form-group mb-3">
             <label for="cover">Cover</label>
+            <?php
+                $book = fetchOneBook($isbn);
+                if($book['cover']!= null ||$book['cover']!=""){
+                    echo '<img width="400" src="uploads/'.$book['cover'].'">';
+                }else{
+                    echo '<img width="400" src="uploads/default.jpg">';
+                }
+            ?>
             <input type="text" class="form-control" name="cover" id="cover" value="<?php echo $book['cover']; ?>">
         </div>
         <div class="form-group mb-3">

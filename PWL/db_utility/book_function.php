@@ -11,12 +11,12 @@ function fetchBookFromDb(): bool|array
     return $results;
 }
 
-function addNewBook($newIsbn, $newTitle, $newAuthor, $newPub, $newPubyear, $newDesc, $newCover, $genreId)
+function addNewBook($newIsbn, $newTitle, $newAuthor, $newPub, $newPubyear, $newDesc, $genreId)
 {
     $results = 0;
     $link = createMySQLConnection();
     $link -> beginTransaction();
-    $query = 'INSERT INTO book(isbn, title, author, publisher, publish_year, short_description, cover, genre_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    $query = 'INSERT INTO book(isbn, title, author, publisher, publish_year, short_description, genre_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
     $stmt = $link -> prepare($query);
     $stmt -> bindParam(1, $newIsbn);
     $stmt -> bindParam(2, $newTitle);
@@ -24,8 +24,7 @@ function addNewBook($newIsbn, $newTitle, $newAuthor, $newPub, $newPubyear, $newD
     $stmt -> bindParam(4, $newPub);
     $stmt -> bindParam(5, $newPubyear);
     $stmt -> bindParam(6, $newDesc);
-    $stmt -> bindParam(7, $newCover);
-    $stmt -> bindParam(8, $genreId);
+    $stmt -> bindParam(7, $genreId);
     if ($stmt -> execute()) {
       $link -> commit();
       $results = 1;
@@ -101,4 +100,22 @@ function deleteBookFromDb($isbn)
     }
     $link = null;
     return $result;
+}
+function uploadImageBookCover ($isbn,$cover)
+{
+  $result = 0;
+  $link = createMySQLConnection();
+  $link -> beginTransaction();
+  $query = 'UPDATE book SET cover = ? WHERE ISBN = ?';
+  $stmt = $link->prepare($query);
+  $stmt->bindParam(1,$cover,PDO::PARAM_STR);
+  $stmt->bindParam(2,$isbn,PDO::PARAM_STR);
+  if($stmt->execute()){
+      $link -> commit();
+      $result = 1;
+  }else{
+      $link -> rollBack();
+  }
+  $link =null;
+  return $result;
 }

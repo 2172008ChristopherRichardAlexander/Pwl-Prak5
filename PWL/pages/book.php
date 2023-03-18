@@ -23,8 +23,9 @@ if (isset($submitPressed)) {
   if ((trim($isbn) == '') || (trim($title) == '') || (trim($author) == '') || (trim($pub) == '') || (trim($pubyear) == '') || (trim($desc) == '') || (trim($id) == '')){
     echo '<div class="d-flex justify-content-center>Please provide with a valid name</div>';
   } else {
-    $results = addNewBook($isbn, $title, $author, $pub, $pubyear, $desc, $cover, $id);
-    if ($results) {
+    $results = addNewBook($isbn, $title, $author, $pub, $pubyear, $desc, $id);
+    echo $results;
+    if ($results==1) {
         echo '<div class="d-flex justify-content-center">Data Succesfully Loaded</div>';
     } else {
         echo '<div class="d-flex justify-content-center">Failed to add data</div>';
@@ -66,10 +67,6 @@ if (isset($submitPressed)) {
                     <textarea class="form-control" name="desc" id="desc" rows="5" placeholder="Short Description" required autofocus></textarea>
                 </div>
                 <div class="form-group mb-3">
-                    <label for="cover">Cover</label>
-                    <input type="text" class="form-control" name="cover" id="cover" placeholder="Book Cover (optional)">
-                </div>
-                <div class="form-group mb-3">
                     <label for="genre_id">Genre</label>
                     <select class="form-select" aria-label="Default select example" name="genre_id" id="genre_id" required autofocus>
                         <option selected disabled>Choose Genre</option>
@@ -105,6 +102,8 @@ if (isset($submitPressed)) {
                 <?php
                     $results = fetchBookFromDb();
                     foreach ($results as $book) {
+                        $fileName = $book['cover'];
+                        $imageFile = 'uploads/'.$fileName;
                         echo '<tr>';
                         echo '<td>' . $book['isbn'] . '</td>';
                         echo '<td>' . $book['title'] . '</td>';
@@ -112,11 +111,17 @@ if (isset($submitPressed)) {
                         echo '<td>' . $book['publisher'] . '</td>';
                         echo '<td>' . $book['publish_year'] . '</td>';
                         echo '<td>' . $book['short_description'] . '</td>';
-                        echo '<td>' . $book['cover'] . '</td>';
+                        if(isset($book['cover'])){
+                            echo '<td> <img width="100" src="' . $imageFile . '"></td>';
+                        }else{
+                            echo '<td> <img width="100" src="uploads/default.jpg"></td>';
+                        }
                         echo '<td>' . $book['name'] . '</td>';
                         echo '<td>
-                            <button class="btn btn-warning" style="margin-bottom: 10px;" onclick="editBook(' . $book['isbn'] . ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                            <button class="btn btn-danger" onclick="deleteBook(' . $book['isbn'] . ')"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                        <button class="btn btn-primary" style="margin-bottom: 10px;" onclick="uploadImgBook(\'' . $book['isbn'] . '\')"><i class="fa fa-file-image-o" aria-hidden="true"></i></button>
+                        <br>
+                        <button class="btn btn-warning" style="margin-bottom: 10px;" onclick="editBook(\'' . $book['isbn'] . '\')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                        <button class="btn btn-danger" onclick="deleteBook(\'' . $book['isbn'] . '\')"><i class="fa fa-trash" aria-hidden="true"></i></button>
                         </td>';
                         echo '</tr>';
                         }
